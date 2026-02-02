@@ -24,10 +24,12 @@ fusion = fusion.Fusion()
 
 current_state = button.value()
 count = 0
+change_state = False
 while True:
     new_state = button.value()
     if new_state != current_state:
         current_state = new_state
+        change_state = True
 
     raw_ax, raw_ay, raw_az = mpu.read_accelerometer()
     raw_gx, raw_gy, raw_gz = mpu.read_gyroscope()
@@ -62,15 +64,21 @@ while True:
     fusion.update_nomag((raw_ax, raw_ay, raw_az), (raw_gx, raw_gy, raw_gz))
     timestamp = time.ticks_ms()
 
-    print(f">rawAx:{timestamp}:{raw_ax}")
-    print(f">rawAy:{timestamp}:{raw_ay}")
-    print(f">rawAz:{timestamp}:{raw_az}")
-    print(f">rawGx:{timestamp}:{raw_gx}")
-    print(f">rawGy:{timestamp}:{raw_gy}")
-    print(f">rawGz:{timestamp}:{raw_gz}")
-    print(f">pitch:{timestamp}:{fusion.pitch:.2f}")
-    print(f">roll:{timestamp}:{fusion.roll:.2f}")
-    print(f">button:{timestamp}:{current_state}")
-    print("")
+    # print(f">rawAx:{timestamp}:{raw_ax}")
+    # print(f">rawAy:{timestamp}:{raw_ay}")
+    # print(f">rawAz:{timestamp}:{raw_az}")
+    # print(f">rawGx:{timestamp}:{raw_gx}")
+    # print(f">rawGy:{timestamp}:{raw_gy}")
+    # print(f">rawGz:{timestamp}:{raw_gz}")
+    # print(f">pitch:{timestamp}:{fusion.pitch:.2f}")
+    # print(f">roll:{timestamp}:{fusion.roll:.2f}")
+    # print(f">button:{timestamp}:{current_state}")
+    # print("")
+    if current_state:
+        print(raw_ax, raw_ay, raw_az, fusion.pitch, fusion.roll)
+    elif change_state:
+        print("Gesture stopped")
+        change_state = False
+    
     
     time.sleep(0.01)

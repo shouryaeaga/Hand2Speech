@@ -1,5 +1,6 @@
 from machine import Pin, I2C
 import time
+from lib import fusion
 from mpu6050 import MPU6050
 
 scl = Pin(21)
@@ -18,6 +19,8 @@ mpu = MPU6050(i2c)
 axs, ays, azs, gxs, gys, gzs = [], [], [], [], [], []
 
 offsets = [-0.36, 0.32, 10.72 - 9.81, -3.1, 0.53, -0.74]
+
+fusion = fusion.Fusion()
 
 current_state = button.value()
 count = 0
@@ -56,7 +59,7 @@ while True:
     #     break
     # END OF CALIBRATION SCRIPT 
     
-
+    fusion.update_nomag((raw_ax, raw_ay, raw_az), (raw_gx, raw_gy, raw_gz))
     timestamp = time.ticks_ms()
 
     print(f">rawAx:{timestamp}:{raw_ax}")
@@ -65,6 +68,8 @@ while True:
     print(f">rawGx:{timestamp}:{raw_gx}")
     print(f">rawGy:{timestamp}:{raw_gy}")
     print(f">rawGz:{timestamp}:{raw_gz}")
+    print(f">pitch:{timestamp}:{fusion.pitch:.2f}")
+    print(f">roll:{timestamp}:{fusion.roll:.2f}")
     print(f">button:{timestamp}:{current_state}")
     print("")
     

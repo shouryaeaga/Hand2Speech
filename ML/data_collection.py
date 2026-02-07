@@ -10,7 +10,7 @@ else:
 
 ser = serial.Serial('/dev/ttyACM0', 115200)
 print(ser.name)
-letter_collecting = 'A'
+letter_collecting = 'B'
 
 # features:
 # Mean
@@ -27,18 +27,26 @@ letter_collecting = 'A'
 
 
 readings_taken = 0
+current_reading = []
+reading_thresh = 15
+samples = 60
 
-while readings_taken < 5:
+while readings_taken < samples:
     line = ser.readline()
     line = line.decode()
-    print(line.strip())
-    if line.strip() == "Gesture stopped":
+    if line.strip() == "Gesture stopped" and len(current_reading) > reading_thresh:
         counter += 1
         readings_taken += 1
+        data.extend(current_reading)
+        current_reading = []
+        percent = int((readings_taken / samples) * 100)
+        print(f"Progress: {readings_taken}/{samples}, or {percent}%")
+    elif line.strip() == "Gesture stopped":
+        current_reading = []
     else:
         try:
             raw_ax, raw_ay, raw_az, pitch, roll = tuple(line.split())
-            data.append([counter, letter_collecting, raw_ax, raw_ay, raw_az, pitch, roll])
+            current_reading.append([counter, letter_collecting, raw_ax, raw_ay, raw_az, pitch, roll])
         except:
             print("Something went wrong")
 

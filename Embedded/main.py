@@ -30,6 +30,8 @@ while True:
     if new_state != current_state:
         current_state = new_state
         change_state = True
+    else:
+        change_state = False
 
     raw_ax, raw_ay, raw_az = mpu.read_accelerometer()
     raw_gx, raw_gy, raw_gz = mpu.read_gyroscope()

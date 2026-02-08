@@ -10,7 +10,7 @@ else:
 
 ser = serial.Serial('/dev/ttyACM0', 115200)
 print(ser.name)
-letter_collecting = 'B'
+letter_collecting = 'C'
 
 # features:
 # Mean
